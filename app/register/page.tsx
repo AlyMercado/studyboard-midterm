@@ -26,8 +26,39 @@ export default function RegisterPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError("TODO: implement register submit handler");
-  }
+    setIsSubmitting(true);
 
+    const response = await fetch("api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    if (!response.ok){
+      const data = await response.json();
+      setError(data.error ?? "Something went wrong")
+      setIsSubmitting(false);
+      return;
+    }
+
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    setIsSubmitting(false);
+
+    if ( result?.error ){
+      router.push("/login");
+      return;
+    }
+
+      router.push("/groups");
+      router.refresh()
+  }
+  
+  
   return (
     <main className="mx-auto max-w-sm p-24">
       <h1 className="text-2xl font-bold">Create an Account</h1>
