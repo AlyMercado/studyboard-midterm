@@ -9,8 +9,7 @@ export default async function GroupDetailPage({
 }) {
   const group = await getGroupById(params.id);
 
-  // Next.js's built-in way to render the closest not-found.tsx (or a
-  // default 404) when a dynamic route doesn't match real data.
+
   if (!group) {
     notFound();
   }
