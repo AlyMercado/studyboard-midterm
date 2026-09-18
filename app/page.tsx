@@ -9,12 +9,12 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col p-24">
-      <h1 className="text-4xl font-bold">Welcome to StudyBoard</h1>
+      <h1 className="text-4xl font-bold text-teal-900">Welcome to StudyBoard!</h1>
       <p className="mt-4 text-gray-600">
         Coordinate tasks with your study groups, all in one place.
       </p>
 
-      <h2 className="mt-10 text-xl font-semibold">Featured Groups</h2>
+      <h2 className="mt-10 text-xl font-semibold text-teal-900">Featured Groups</h2>
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {groups.map((group) => (
           <GroupCard key={group.id} group={group} />

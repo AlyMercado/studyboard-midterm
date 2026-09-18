@@ -12,8 +12,6 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  // TODO (Step 9): Get the session with:
-  // `status` is one of "loading" | "authenticated" | "unauthenticated".
 
   return (
     <nav className="flex items-center justify-between border-b px-6 py-4">
@@ -28,60 +26,50 @@ export default function Navbar() {
                 href={link.href}
                 className={
                   isActive
-                    ? "font-semibold text-blue-600"
-                    : "text-gray-600 hover:text-blue-600"
+                    ? "font-semibold text-teal-700"
+                    : "text-gray-600 hover:text-teal-700"
                 }
               >
                 {link.label}
               </Link>
             );
           })}
-          {/* TODO (Step 10): When status === "authenticated", render a
-              <Link href="/groups/new"> "New Group" link here too. */}
           {status === "authenticated" && (
             <Link
-              href = "/groups/new"
-              className = {
+              href="/groups/new"
+              className={
                 pathname === "/groups/new"
-                ? "font-semibold text-teal-700"
-                : "text-teal-950 hover:text-teal-700"
+                  ? "font-semibold text-teal-700"
+                  : "text-teal-950 hover:text-teal-700"
               }
             >
-              New Group 
+              New Group
             </Link>
           )}
         </div>
       </div>
 
       <div className="flex items-center gap-4 text-sm">
-        {/* TODO (Step 11): Replace this placeholder with real auth-aware UI:
-            - If status === "authenticated": show "Hi, {session.user?.name}"
-              and a "Sign Out" button that calls signOut({ callbackUrl: "/" }).
-            - Otherwise: show "Log In" and "Register" links, like below. */}
-        { status === "authenticated" ? (
-            <>
-              <span className="text-teal-950">Hello, {session.user?.name} </span>
-              <button
-                onClick={() => signOut(redirect("/login"))}
-                className="text-teal-950 hover:text-teal-700"
-              >
-                Sign Out 
-              </button>
-            </>
-        )
-        :
-        (
+        {status === "authenticated" ? (
+          <>
+            <span className="text-teal-950">Hello, {session.user?.name} </span>
+            <button
+              onClick={() => signOut(redirect("/login"))}
+              className="text-teal-950 hover:text-teal-700"
+            >
+              Sign Out
+            </button>
+          </>
+        ) : (
           <>
             <Link href="/login" className="text-teal-950 hover:text-teal-700">
-            Log In
-          </Link>
-          <Link href="/register" className="text-teal-950 hover:text-teal-700">
-            Register
-          </Link>
+              Log In
+            </Link>
+            <Link href="/register" className="text-teal-950 hover:text-teal-700">
+              Register
+            </Link>
           </>
-        )
-        }
-        
+        )}
       </div>
     </nav>
   );

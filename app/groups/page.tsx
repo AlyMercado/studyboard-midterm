@@ -17,11 +17,11 @@ export default async function GroupsPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">All Groups</h1>
+        <h1 className="text-3xl font-bold text-teal-900">All Groups</h1>
         { session && 
           <Link
             href="/groups/new"
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700" 
           >
              + New Group
           </Link>
