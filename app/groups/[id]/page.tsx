@@ -5,53 +5,73 @@ import { getGroupById } from "@/lib/data";
 import TaskItem from "@/components/TaskItem";
 import DeleteGroupButton from "@/components/DeleteGroupButton";
 import NewTaskForm from "@/components/NewTaskForm";
+import BookSearch from "@/components/BookSearch";
+import AISubtaskGenerator from "@/components/AISubtaskSuggester";
+import RealtimeNotifications from "@/components/RealtimeNotifications";
 
 export default async function GroupDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  // Step 1: fetch session and group in parallel, since neither depends on the other
-  const [session, group] = await Promise.all([
-    getServerSession(authOptions),
+  const [group, session] = await Promise.all([
     getGroupById(params.id),
+    getServerSession(authOptions),
   ]);
 
   if (!group) {
     notFound();
   }
 
-  // Step 2: mirrors the exact same check your API routes already make
-  const isOwner = session?.user.id === group.ownerId;
+  const isOwner = session?.user?.id === group.ownerId;
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold">{group.name}</h1>
-      <p className="text-teal-900">
-        {group.subject} · {group.memberCount} members · Created by{" "}
-        {group.owner.name}
-      </p>
+    <div className="mx-auto max-w-4xl p-6">
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-pink-800">{group.name}</h1>
+          <p className="text-sm text-pink-500">{group.subject}</p>
+        </div>
 
-      {/* Delete Group + Add task form: below subtitle, above Tasks list */}
-      {isOwner && (
-        <div className="mt-3 flex flex-col gap-2">
+        {isOwner && (
           <DeleteGroupButton groupId={group.id} />
+        )}
+      </div>
+
+      <ul className="space-y-3">
+        {group.tasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            groupId={group.id}
+            isOwner={isOwner}
+          />
+        ))}
+        {group.tasks.length === 0 && (
+          <li className="text-sm text-pink-500">No tasks yet.</li>
+        )}
+      </ul>
+
+      {isOwner && (
+        <div className="mt-4">
           <NewTaskForm groupId={group.id} />
         </div>
       )}
 
-      <h2 className="mt-8 text-lg font-semibold">Tasks</h2>
-      <ul className="mt-3 flex flex-col gap-2">
-        {group.tasks.map((task) => (
-          // Step 3: pass isOwner and groupId down to each TaskItem
-          <TaskItem
-            key={task.id}
-            task={task}
-            isOwner={isOwner}
-            groupId={group.id}
-          />
-        ))}
-      </ul>
+      <h2 className="mt-8 text-lg font-semibold text-pink-800">Reference Books</h2>
+      <p className="mt-1 text-sm text-pink-500">
+        Powered by the Open Library API - search for books related to{" "}
+        {group.subject}.
+      </p>
+      <div className="mt-3">
+        <BookSearch initialQuery={group.subject} />
+      </div>
+        {isOwner && (
+          <div className="mt-4">
+            <AISubtaskGenerator groupId={group.id} />
+          </div>
+        )}
+        <RealtimeNotifications groupId={group.id} />
     </div>
   );
 }
